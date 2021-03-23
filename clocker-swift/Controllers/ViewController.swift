@@ -247,17 +247,20 @@ extension ViewController: GIDSignInDelegate, GIDSignInUIDelegate {
             
             if updateEntires == true {
             self.utils.addToast(backgroundColor: #colorLiteral(red: 0.6000000238, green: 0.6000000238, blue: 0.6000000238, alpha: 1), message: "Updating entries...", nc: self.navigationController!)
-            self.sheetBrain.readData { (bool) in
-                if bool == true {
+                self.sheetBrain.readData { (bool, counter) in
+                if bool == true && counter > 0{
                     DispatchQueue.main.async {
                         self.loadEntries()
                         self.showProgress()
-                        self.utils.addToast(backgroundColor: #colorLiteral(red: 0.6000000238, green: 0.6000000238, blue: 0.6000000238, alpha: 1), message: "Entires updated!", nc: self.navigationController!)
+                        self.utils.addToast(backgroundColor: #colorLiteral(red: 0.4666666687, green: 0.7647058964, blue: 0.2666666806, alpha: 1), message: "Entires updated!", nc: self.navigationController!)
                     }
                     print("New entries found!")
-                } else {
+                } else if bool == true && counter == 0{
+                    self.utils.addToast(backgroundColor: #colorLiteral(red: 0.6666666865, green: 0.6666666865, blue: 0.6666666865, alpha: 1), message: "All entires already added!", nc: self.navigationController!)
+                } else if bool == false {
                     self.utils.addToast(backgroundColor: #colorLiteral(red: 0.8549019694, green: 0.250980407, blue: 0.4784313738, alpha: 1), message: "Failed to get entires...", nc: self.navigationController!)
-                        }
+
+                }
                     }
                 } else {
                 return

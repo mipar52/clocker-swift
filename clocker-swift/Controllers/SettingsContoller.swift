@@ -179,20 +179,30 @@ class SettingsContoller: UITableViewController, UINavigationControllerDelegate {
                 let descAlert = UIAlertController(title: "Import entries", message: "This operation will import any new entries that were entered", preferredStyle: .alert)
                 let done = UIAlertAction(title: "Yes", style: .default) { (action) in
                     self.utils.showSpinner(message: "Getting entires..", vc: self)
-                    self.sheetBrain.readData { (bool) in
-                        if bool == true {
+                    self.sheetBrain.readData { (bool, counter) in
+                        if bool == true && counter > 0{
                             self.dismiss(animated: true) {
                                 self.utils.showAlert(title: "Success", message: "New entries added!", vc: self) {
                                     print("Done")
                                 }
                             }
+                        } else if bool == true && counter == 0 {
+                            self.dismiss(animated: true) {
+                                self.utils.showAlert(title: "Success", message: "All entries already added!\n \nIf you did not receive any entries try the following:\n \n1. See if you name is correctly written in the name field\n \n2. Check if your Spreadsheet is containing the correct entry format", vc: self) {
+                                    print("Done")
+                                }
+                            }
+                         
                         } else if bool == false {
-                            self.utils.showAlert(title: "Error", message: "Errors in adding entries..", vc: self) {
-                                print("Done")
+                            self.dismiss(animated: true) {
+                                self.utils.showAlert(title: "Error", message: "Errors in adding entries..", vc: self) {
+                                    print("Fail")
+                               }
                             }
                         }
                     }
                 }
+                
                 let nah = UIAlertAction(title: "Cancel", style: .cancel, handler: nil)
                 descAlert.addAction(done)
                 descAlert.addAction(nah)

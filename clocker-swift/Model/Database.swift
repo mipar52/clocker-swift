@@ -40,7 +40,10 @@ class DatabaseBrain {
 
     }
     
-    func fetchExistingData (year: String, month: String, entryData: [String],timeStamp: Int, date: Int, timeStart: Int, timeEnd: Int, workHours: Int, desc:Int ) {
+    func fetchExistingData (year: String, month: String, entryData: [String],timeStamp: Int, date: Int, timeStart: Int, timeEnd: Int, workHours: Int, desc:Int) -> Int {
+        
+        var counter = 0
+        
         loadYears()
         
         var enteredMonth = month
@@ -85,7 +88,7 @@ class DatabaseBrain {
                 
                 for entity in yearArray {
                     if entity.year == year {
-                        fetchExistingMonth(month: enteredMonth, yearString: entity.year!, year: entity, entryData: entryData, timeStamp: timeStamp, date: date, timeStart: timeStart, timeEnd: timeEnd, workHours: workHours, desc:desc)
+                        counter = fetchExistingMonth(month: enteredMonth, yearString: entity.year!, year: entity, entryData: entryData, timeStamp: timeStamp, date: date, timeStart: timeStart, timeEnd: timeEnd, workHours: workHours, desc:desc)
                     }
                 }
             } else {
@@ -93,7 +96,7 @@ class DatabaseBrain {
                 newYear.year = year
                 yearArray.append(newYear)
                 savePassedData()
-                fetchExistingMonth(month: enteredMonth, yearString: newYear.year!, year: newYear, entryData: entryData, timeStamp: timeStamp, date: date, timeStart: timeStart, timeEnd: timeEnd, workHours: workHours, desc:desc)
+                counter = fetchExistingMonth(month: enteredMonth, yearString: newYear.year!, year: newYear, entryData: entryData, timeStamp: timeStamp, date: date, timeStart: timeStart, timeEnd: timeEnd, workHours: workHours, desc:desc)
             }
             
         } catch let error as NSError {
@@ -101,10 +104,14 @@ class DatabaseBrain {
             
         }
         
+        return counter
     }
     
-    func fetchExistingMonth (month: String,yearString : String,year: Year, entryData: [String],timeStamp: Int, date: Int, timeStart: Int, timeEnd: Int, workHours: Int, desc:Int) {
+    func fetchExistingMonth (month: String,yearString : String,year: Year, entryData: [String],timeStamp: Int, date: Int, timeStart: Int, timeEnd: Int, workHours: Int, desc:Int) -> Int {
         print("Entered fetchExistingMonth")
+        
+        var counter = 0
+        
         loadMonths(year: year)
     
         let fetchRequest = NSFetchRequest<NSManagedObject>(entityName: "Month")
@@ -125,7 +132,7 @@ class DatabaseBrain {
                     print("Month already added!: \(month)")
                     for entity in monthArray {
                         if entity.month == month  {
-                            fetchExistingEntry(entryDate: entryData[date], year: (entity.parentEntity?.year!)!, month: entity, yearEntity: year, entryData: entryData, timeStamp: timeStamp, date: date, timeStart: timeStart, timeEnd: timeEnd, workHours: workHours, desc:desc)
+                           counter = fetchExistingEntry(entryDate: entryData[date], year: (entity.parentEntity?.year!)!, month: entity, yearEntity: year, entryData: entryData, timeStamp: timeStamp, date: date, timeStart: timeStart, timeEnd: timeEnd, workHours: workHours, desc:desc)
                         }
                     }
                 } else {
@@ -136,18 +143,21 @@ class DatabaseBrain {
                     savePassedData()
                     
                     if newMonth.parentEntity?.year == yearString {
-                        fetchExistingEntry(entryDate: entryData[date], year: (newMonth.parentEntity?.year!)!, month: newMonth, yearEntity: year, entryData: entryData, timeStamp: timeStamp, date: date, timeStart: timeStart, timeEnd: timeEnd, workHours: workHours, desc:desc)
+                        counter = fetchExistingEntry(entryDate: entryData[date], year: (newMonth.parentEntity?.year!)!, month: newMonth, yearEntity: year, entryData: entryData, timeStamp: timeStamp, date: date, timeStart: timeStart, timeEnd: timeEnd, workHours: workHours, desc:desc)
                     }
                   print("Datum koji je prosa: \(month)")
                 }
             } catch let error as NSError {
                 print("Could not fetch. \(error), \(error.userInfo)")
             }
+        
+        return counter
 }
     
-    func fetchExistingEntry (entryDate: String, year: String,month: Month, yearEntity: Year, entryData: [String],timeStamp: Int, date: Int, timeStart: Int, timeEnd: Int, workHours: Int, desc:Int) {
+    func fetchExistingEntry (entryDate: String, year: String,month: Month, yearEntity: Year, entryData: [String],timeStamp: Int, date: Int, timeStart: Int, timeEnd: Int, workHours: Int, desc:Int) -> Int {
         print("Entered fetchExistingEntry")
-
+        var counter = 0
+        
         entries()
         let fetchRequest = NSFetchRequest<NSManagedObject>(entityName: "WorkEntry")
 
@@ -179,14 +189,15 @@ class DatabaseBrain {
                     
                         entryArray.append(newEntry)
                         savePassedData()
-
+                        counter += 1
                 }
             }catch let error as NSError {
                 print("Could not fetch. \(error), \(error.userInfo)")
                 
             }
-
+            return counter
 }
+    
     func loadYears() {
 
         let request : NSFetchRequest<Year> = Year.fetchRequest()

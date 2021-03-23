@@ -21,11 +21,15 @@ class SheetBrain: NSObject, GIDSignInDelegate {
     
     var nameIndex: Int?
     var dateIndex: Int?
+    var parsedDate: [String]?
     var timeStartIndex: Int?
     var timeEndIndex: Int?
     var workHoursIndex: Int?
     var descIndex: Int?
     var timeStampIndex: Int?
+    
+    var year: String?
+    var month: String?
     //https://docs.google.com/spreadsheets/d/12b3gUhvJfEBakrgR1r5lALfrdr6fKS6oCA1hmxrdlf4/edit#gid=0 -> test sheet
 
     func sendDataToSheet(results: Array<[Any]>.ArrayLiteralElement, failedData: String?, completionHandler: @escaping (Bool) -> Void) {
@@ -59,9 +63,10 @@ class SheetBrain: NSObject, GIDSignInDelegate {
         
         }
     
-    func readData(completionHandler: @escaping (Bool) -> Void) {
+    func readData(completionHandler: @escaping (Bool, Int) -> Void) {
         print("Getting sheet data...")
         
+        var counter = 0
         GIDSignIn.sharedInstance().delegate = self
         GIDSignIn.sharedInstance().scopes = combinedScopes
         GIDSignIn.sharedInstance()?.signInSilently()
@@ -76,7 +81,7 @@ class SheetBrain: NSObject, GIDSignInDelegate {
             if let error = error {
                 print("error in getting data")
                 print(error.localizedDescription)
-                completionHandler(false)
+                completionHandler(false, counter)
                 return
             }
             
@@ -103,57 +108,57 @@ class SheetBrain: NSObject, GIDSignInDelegate {
                      timeStampIndex = row.firstIndex(of: "Timestamp")
                     print("Name index: \(String(describing: timeStampIndex))")
                 }
-                if row.contains("Name and Surname") {
+                if row.contains("Ime i prezime") {
                     //infoRow = row
-                     nameIndex = row.firstIndex(of: "Name and Surname")
+                     nameIndex = row.firstIndex(of: "Ime i prezime")
                     print("Name index: \(String(describing: nameIndex))")
                 }
-                if row.contains("Date") {
-                    dateIndex = row.firstIndex(of: "Date")
+                if row.contains("Datum") {
+                    dateIndex = row.firstIndex(of: "Datum")
+                    
                     print("Datum index: \(String(describing: dateIndex))")
                 }
-                if row.contains("Time start") {
-                    timeStartIndex = row.firstIndex(of: "Time start")
+                if row.contains("Vrijeme početka rada") {
+                    timeStartIndex = row.firstIndex(of: "Vrijeme početka rada")
                     print("Start index: \(String(describing: timeStartIndex))")
                 }
                 
-                if row.contains("Time end") {
-                    timeEndIndex = row.firstIndex(of: "Time end")
+                if row.contains("Vrijeme završetka rada") {
+                    timeEndIndex = row.firstIndex(of: "Vrijeme završetka rada")
                     print("End time index: \(String(describing: timeEndIndex))")
                 }
                 
-                if row.contains("Working hours") {
-                    workHoursIndex = row.firstIndex(of: "Working hours")
+                if row.contains("Broj efektivnih radnih sati") {
+                    workHoursIndex = row.firstIndex(of: "Broj efektivnih radnih sati")
                     print("Work hours: \(String(describing: workHoursIndex))")
                 }
                 
-                if row.contains("Description") {
-                    descIndex = row.firstIndex(of: "Description")
+                if row.contains("Kratki opis obavljenog posla") {
+                    descIndex = row.firstIndex(of: "Kratki opis obavljenog posla")
                     print("Desc index: \(String(describing: descIndex))")
                 }
                 
                 if row.contains(name) {
+                    parsedDate = row[dateIndex!].components(separatedBy: "/")
+                        
+                    year = parsedDate![2]
+                    month = parsedDate![0]
                     
-                let parsedDate = row[dateIndex!].components(separatedBy: "/")
-                    
-                let year = parsedDate[2]
-                let month = parsedDate[0]
-                    db.fetchExistingData(year: year, month: month, entryData: row, timeStamp: timeStampIndex!, date: dateIndex!, timeStart: timeStartIndex!, timeEnd: timeEndIndex!, workHours: workHoursIndex!, desc: descIndex!)
+                   counter = db.fetchExistingData(year: year!, month: month!, entryData: row, timeStamp: timeStampIndex!, date: dateIndex!, timeStart: timeStartIndex!, timeEnd: timeEndIndex!, workHours: workHoursIndex!, desc: descIndex!)
               
                 }
             
             if rows.isEmpty {
                 return
             }
-                
-            group.leave()
-
-            
+                group.leave()
         }
+           
             group.wait()
             
             DispatchQueue.main.async {
-            completionHandler(true)
+            completionHandler(true, counter)
+                print("Counter number: \(counter)")
             }
         }
     }
