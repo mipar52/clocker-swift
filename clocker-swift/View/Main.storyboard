@@ -648,8 +648,15 @@
                             <outlet property="delegate" destination="GZK-ee-MpR" id="bHv-W2-bMo"/>
                         </connections>
                     </tableView>
-                    <navigationItem key="navigationItem" id="nuP-cM-17d"/>
+                    <navigationItem key="navigationItem" id="nuP-cM-17d">
+                        <barButtonItem key="rightBarButtonItem" title="Hours" id="qw9-Sn-DQM">
+                            <connections>
+                                <action selector="hoursButtonPressed:" destination="GZK-ee-MpR" id="SAM-Ai-jZw"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
                     <connections>
+                        <outlet property="workedHours" destination="qw9-Sn-DQM" id="FkR-uV-aC8"/>
                         <segue destination="XjD-CD-QkC" kind="show" identifier="goToEntry" id="85Y-jX-et7"/>
                     </connections>
                 </tableViewController>
