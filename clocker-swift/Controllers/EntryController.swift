@@ -1,6 +1,6 @@
 //
 //  EntryController.swift
-//  MicroStudent
+//  Clocker
 //
 //  Created by Milan Parađina on 04.01.2021..
 //
@@ -106,27 +106,15 @@ class EntryController: UITableViewController {
 
     }
     
-    //MARK: CoreData funcs
-
-    func loadPassedData() {
-
-        let request : NSFetchRequest<WorkEntry> = WorkEntry.fetchRequest()
-
-        do{
-            entryArray = try db.context.fetch(request)
-        } catch {
-            print("Error loading categories \(error)")
-        }
-        tableView.reloadData()
-    }
+    //MARK: CoreData
     
     func loadEntries(with request: NSFetchRequest<WorkEntry> = WorkEntry.fetchRequest(), predicate: NSPredicate? = nil) {
         
         let monthPredicate = NSPredicate(format: "parentEntity.month LIKE  %@", selectedMonth!.month! as String)
         let yearPredicate = NSPredicate(format: "year LIKE  %@", selectedMonth!.parentEntity!.year! as String)
        
-        let timestamp = NSSortDescriptor(key: "timestamp", ascending: true)
-        request.sortDescriptors = [timestamp]
+//        let timestamp = NSSortDescriptor(key: "timestamp", ascending: true)
+//        request.sortDescriptors = [timestamp]
         
         if let addtionalPredicate = predicate {
             request.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: [monthPredicate,yearPredicate,addtionalPredicate])

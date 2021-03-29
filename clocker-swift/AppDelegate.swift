@@ -1,6 +1,6 @@
 //
 //  AppDelegate.swift
-//  clocker-swift
+//  Clocker
 //
 //  Created by Milan Parađina on 19.03.2021..
 //

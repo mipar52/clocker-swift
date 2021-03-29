@@ -1,6 +1,6 @@
 //
 //  SettingsContoller.swift
-//  MicroStudent
+//  Clocker
 //
 //  Created by Milan Parađina on 04.12.2020..
 //

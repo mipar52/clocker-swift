@@ -1,6 +1,6 @@
 //
 //  MainScreenTableController.swift
-//  MicroStudent
+//  Clocker
 //
 //  Created by Milan Parađina on 27/10/2020.
 //

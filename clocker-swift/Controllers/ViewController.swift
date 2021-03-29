@@ -1,6 +1,6 @@
 //
 //  ViewController.swift
-//  MicroStudent
+//  Clocker
 //
 //  Created by Milan Parađina on 23/10/2020.
 //

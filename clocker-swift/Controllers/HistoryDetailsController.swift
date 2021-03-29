@@ -1,6 +1,6 @@
 //
 //  HistoryDetailsController.swift
-//  MicroStudent
+//  Clocker
 //
 //  Created by Milan Parađina on 27.12.2020..
 //

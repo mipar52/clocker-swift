@@ -1,6 +1,6 @@
 //
 //  Utilities.swift
-//  MicroStudent
+//  Clocker
 //
 //  Created by Milan Parađina on 23.12.2020..
 //

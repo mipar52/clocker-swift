@@ -1,6 +1,6 @@
 //
 //  MonthEntryController.swift
-//  MicroStudent
+//  Clocker
 //
 //  Created by Milan Parađina on 04.01.2021..
 //
